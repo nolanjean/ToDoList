@@ -1,6 +1,8 @@
 package org.ldv.AppStarter_ToDoList.config
 
+import jakarta.servlet.http.HttpServletRequest
 import org.ldv.AppStarter_ToDoList.service.AuditLogService
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -21,6 +23,9 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 class SecurityConfig(
     private val auditLogService: AuditLogService
 ) {
+
+    // AJOUT TP2 - Logger dédié à l’audit (redirigé vers audit.log via logbackspring.xml)
+    private val auditLogger = LoggerFactory.getLogger("AUDIT")
 
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
@@ -54,13 +59,13 @@ class SecurityConfig(
             .formLogin { form ->
                 form
                     .loginPage("/login")
+                    // AJOUT TP2 - branchement du handler de succès avec audit fichier
                     .successHandler(customAuthenticationSuccessHandler())
                     .permitAll()
             }
             .logout { logout ->
-                logout
-                    .logoutSuccessHandler(customLogoutSuccessHandler())
-                    .permitAll()
+                // AJOUT TP2 - branchement du handler de logout avec audit fichier
+                logout.logoutSuccessHandler(customLogoutSuccessHandler())
             }
             .csrf { csrf ->
                 csrf.ignoringRequestMatchers("/h2-console/**")
@@ -72,29 +77,42 @@ class SecurityConfig(
         return http.build()
     }
 
-    private fun customAuthenticationSuccessHandler(): AuthenticationSuccessHandler =
-        AuthenticationSuccessHandler { request, response, authentication ->
+    // ...
+    private fun customAuthenticationSuccessHandler(): AuthenticationSuccessHandler
+            =
+        AuthenticationSuccessHandler { request: HttpServletRequest, response,
+                                       authentication ->
             val username = authentication.name
+            val ip = request.remoteAddr
+            // (déjà présent au TP1) : journalisation en base de données
             auditLogService.log(
                 username = username,
                 action = "LOGIN",
                 details = "Connexion réussie",
                 request = request
             )
+            auditLogger.info("LOGIN user={} ip={}", username, ip)
             response.sendRedirect("/tasks")
         }
 
 
+    // ...
     private fun customLogoutSuccessHandler(): LogoutSuccessHandler =
-        LogoutSuccessHandler { request, response, authentication ->
+        LogoutSuccessHandler { request: HttpServletRequest, response,
+                               authentication ->
             val username = authentication?.name ?: "anonymous"
+            val ip = request.remoteAddr
+            // (déjà présent au TP1) : journalisation en base de données
             auditLogService.log(
                 username = username,
                 action = "LOGOUT",
                 details = "Déconnexion",
                 request = request
             )
+            // AJOUT TP2 - écriture du log d’audit dans le fichier (via logger "AUDIT")
+            auditLogger.info("LOGOUT user={} ip={}", username, ip)
             response.sendRedirect("/login?logout")
         }
+
 
 }
