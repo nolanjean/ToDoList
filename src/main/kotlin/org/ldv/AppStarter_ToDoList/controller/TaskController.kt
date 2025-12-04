@@ -139,14 +139,14 @@ class TaskController(
         val task = taskService.getTaskById(id)
         if (task != null && task.user.username == authentication.name) {
             taskService.deleteTask(id)
-            // TP1 - audit en base
+            // (TP1) - journalisation d’audit en base
             auditLogService.log(
                 username = authentication.name,
                 action = "UPDATE_TASK",
                 details = "Modification tâche #$id (titre=$title, statut=$status)",
                 request = request
             )
-            // AJOUT TP2 - audit fichier
+            // AJOUT TP2 - partie 7 étape 5 - écriture du log d’audit dans le fichier audit.log
             auditLogger.info(
                 "UPDATE_TASK user={} taskId={} title=\"{}\" status={} dueDate={}",
                 authentication.name,
@@ -155,8 +155,11 @@ class TaskController(
                 status,
                 dueDate
             )
-            // AJOUT TP2 - log technique
-            logger.info("Mise à jour de la tâche {} par {}", id, authentication.name)
+            logger.info(
+                "Mise à jour de la tâche {} par l'utilisateur {}",
+                id,
+                authentication.name
+            )
         } else {
             // AJOUT TP2 - log technique en cas de tentative de suppression non autorisée
             logger.warn(

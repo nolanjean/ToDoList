@@ -1,10 +1,3 @@
-2025-12-02 11:40:33,107 INFO  LOGIN user=admin ip=0:0:0:0:0:0:0:1
-2025-12-02 11:42:41,537 INFO  CREATE_TASK user=admin title="azertyuiop" dueDate=2025-12-02T11:42
-2025-12-02 11:43:00,547 INFO  UPDATE_TASK user=admin taskId=1 title="azertyuiop" status=IN_PROGRESS dueDate=2025-12-02T10:42
-2025-12-02 11:44:53,038 INFO  CREATE_TASK user=admin title="dzdzdz" dueDate=2026-01-11T11:44
-2025-12-02 11:49:15,931 INFO  LOGOUT user=admin ip=0:0:0:0:0:0:0:1
-2025-12-02 11:49:26,132 INFO  LOGIN user=admin ip=0:0:0:0:0:0:0:1
-2025-12-02 11:49:35,527 INFO  CREATE_TASK user=admin title="arezedazedazd" dueDate=2025-12-02T11:49
-2025-12-02 11:52:26,572 INFO  CREATE_TASK user=admin title="zaedz" dueDate=2025-12-02T11:52
-2025-12-02 11:57:25,318 INFO  CREATE_TASK user=admin title="zadeazdfzefget" dueDate=2025-12-02T11:57
-2025-12-02 11:57:27,677 INFO  UPDATE_TASK user=admin taskId=1 title="zadeazdfzefget" status=TODO dueDate=null
+2025-12-04 08:36:14,898 INFO  LOGIN user=admin ip=0:0:0:0:0:0:0:1
+2025-12-04 08:36:29,564 INFO  CREATE_TASK user=admin title="zedazedaz" dueDate=2025-12-04T08:36
+2025-12-04 08:36:37,524 INFO  UPDATE_TASK user=admin taskId=1 title="zedazedaz" status=TODO dueDate=null
